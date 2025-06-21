@@ -11,7 +11,7 @@ set(0, 'DefaultFigurePosition',[100 100 1100 600]);
 
 % Initialize mesh (Nx: physical N: stochastic)
 Nx = 128;
-N = 16;
+N = 32;
 
 xpts = linspace(0,1,Nx+1);
 ypts = linspace(0,1,N+1);
@@ -27,13 +27,12 @@ tmax=0.2;
 tspan = [t0 tmax];
 
 u = zeros(Nx,N);
-% rho = ones(Nx,N) * 0.125;
-% p = ones(Nx,N) * 0.1;
-rho = ones(Nx,N) * 0.15;
-p = ones(Nx,N) * 0.15;
+rho = ones(Nx,N) * 0.125;
+p = ones(Nx,N) * 0.1;
 
-rho(X < 0.5 + 0.1*Y) = 1; 
-p(X < 0.5 + 0.1*Y) = 1;   
+
+rho(X < 0.475 + 0.05*Y) = 1; 
+p(X < 0.475 + 0.05*Y) = 1;   
 gamma = 1.4;
 E = p / (gamma - 1) + 0.5 * rho .* u.^2;
 
@@ -50,7 +49,7 @@ params.dy = dy;
 params.gamma = gamma;
 
 % SFVM - state reconstruction 
-options = odeset('NonNegative', numel(ics), 'RelTol',1e-8,'AbsTol',1e-10);
+options = odeset('NonNegative', numel(ics), 'RelTol',1e-6,'AbsTol',1e-8);
 tic
 [~,U_state] = ode45(@(t,U) rhs_2D_euler_state(t,U,params), tspan, ics, options);
 toc
@@ -92,10 +91,10 @@ F_sample = zeros(2*N, 2*3*Nx*length(tspan_sample));
 quad_combined = reshape([quadL; quadR], [], 1)';
 for i = 1:length(quad_combined)
     u = zeros(Nx,1);
-    rho = ones(Nx,1) * 0.15;
-    p = ones(Nx,1) * 0.15;
-    rho(x < 0.5+0.5*quad_combined(i)) = 1; 
-    p(x < 0.5+0.5*quad_combined(i)) = 1;   
+    rho = ones(Nx,1) * 0.125;
+    p = ones(Nx,1) * 0.1;
+    rho(x < 0.475+0.05*quad_combined(i)) = 1; 
+    p(x < 0.475+0.05*quad_combined(i)) = 1;     
     E = p / (gamma - 1) + 0.5 * rho .* u.^2;    
     ics_sample = [rho; rho.*u; E];
     F_sample(i,:)= sampling_euler(Nx, gamma, ics_sample, tspan_sample);
@@ -139,3 +138,9 @@ er_ROM = sum(abs(sol_state - sol_ROM) * (dx*dy),"all") ...
     / sum(abs(sol_state) * (dx*dy),"all");
 
 disp("The relative L1 error (state and ROM) is " + er_ROM)
+
+% Compute mean and std
+sol_mean = mean( sol_ROM_rho, 2);
+sol_diff = sol_ROM_rho - sol_mean;  
+sol_var = sum(sol_diff.^2, 2) / (N - 1);
+sol_std = sqrt(sol_var);
