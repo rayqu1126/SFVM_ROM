@@ -65,11 +65,11 @@ function dUdt = rhs_2D_euler_state(~,U,params)
     Ei_2 = pi_2 / (gamma - 1) + 0.5 * rhoi_2 .* ui_2.^2; 
 
 
-    lambda1 = max(abs(ui_1)+sqrt(gamma*pi_1./rhoi_1),...
-        abs(uim1_1)+sqrt(gamma*pim1_1./rhoim1_1));
+    lambda1 = max(abs(ui_1)+real(sqrt(gamma*pi_1./rhoi_1)),...
+        abs(uim1_1)+real(sqrt(gamma*pim1_1./rhoim1_1)));
 
-    lambda2 = max(abs(ui_2)+sqrt(gamma*pi_2./rhoi_2),...
-        abs(uim1_2)+sqrt(gamma*pim1_2./rhoim1_2));
+    lambda2 = max(abs(ui_2)+real(sqrt(gamma*pi_2./rhoi_2)),...
+        abs(uim1_2)+real(sqrt(gamma*pim1_2./rhoim1_2)));
 
     F_rho_im12_1 = (rhoi_1.*ui_1 + rhoim1_1.*uim1_1)/2 - 0.5*lambda1.*(rhoi_1-rhoim1_1);
     F_rho_im12_2 = (rhoi_2.*ui_2 + rhoim1_2.*uim1_2)/2 - 0.5*lambda2.*(rhoi_2-rhoim1_2);
@@ -108,13 +108,12 @@ function dUdt = rhs_2D_euler_state(~,U,params)
     Eip1_2 = pip1_2 / (gamma - 1) + 0.5 * rhoip1_2 .* uip1_2.^2;
     Ei_2 = pi_2 / (gamma - 1) + 0.5 * rhoi_2 .* ui_2.^2;    
 
+    lambda1 = max(abs(ui_1)+real(sqrt(gamma*pi_1./rhoi_1)),...
+        abs(uip1_1)+real(sqrt(gamma*pip1_1./rhoip1_1)));
 
-    lambda1 = max(abs(ui_1)+sqrt(gamma*pi_1./rhoi_1),...
-        abs(uip1_1)+sqrt(gamma*pip1_1./rhoip1_1));
-
-    lambda2 = max(abs(ui_2)+sqrt(gamma*pi_2./rhoi_2),...
-        abs(uip1_2)+sqrt(gamma*pip1_2./rhoip1_2));
-
+    lambda2 = max(abs(ui_2)+real(sqrt(gamma*pi_2./rhoi_2)),...
+        abs(uip1_2)+real(sqrt(gamma*pip1_2./rhoip1_2)));
+        
     Frhoip12_1 = (rhoi_1.*ui_1 + rhoip1_1.*uip1_1)/2 - 0.5*lambda1.*(rhoip1_1-rhoi_1);
     Frhoip12_2 = (rhoi_2.*ui_2 + rhoip1_2.*uip1_2)/2 - 0.5*lambda2.*(rhoip1_2-rhoi_2);
     
