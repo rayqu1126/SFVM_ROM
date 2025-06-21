@@ -69,7 +69,7 @@ toc
 
 sol_flux = reshape(U_flux(end,:),3*Nx,N);
 sol_flux_rho = sol_flux(1:Nx,:);
-
+sol_flux_rhou = sol_flux(Nx+1:2*Nx,:);
 
 figure
 surf(X,Y,sol_flux_rho)
@@ -129,6 +129,7 @@ params.ids = ids;
 
 sol_ROM = reshape(U_ROM(end,:),3*Nx,N);
 sol_ROM_rho = sol_ROM(1:Nx,:);
+sol_ROM_rhou = sol_ROM(Nx+1:2*Nx,:);
 
 figure
 surf(X,Y,sol_ROM_rho)
@@ -144,3 +145,11 @@ sol_mean = mean( sol_ROM_rho, 2);
 sol_diff = sol_ROM_rho - sol_mean;  
 sol_var = sum(sol_diff.^2, 2) / (N - 1);
 sol_std = sqrt(sol_var);
+
+figure
+plot(x, sol_mean, LineWidth= 2, color = "r")
+hold on 
+plot(x,sol_mean + sol_std, LineWidth= 2, color = "r", LineStyle= "--")
+hold on
+plot(x,sol_mean - sol_std, LineWidth=2, color = "r", LineStyle= "--")
+xlabel('$x$'), ylabel('$\rho$')
