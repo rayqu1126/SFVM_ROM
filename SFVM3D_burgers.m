@@ -130,10 +130,10 @@ xlabel('X'), ylabel('Y'), zlabel('SFVM (flux)')
 % 
 
 % Compute solution mean and std
-sol_mean = sum(sum(sol_ROM,2),3) * dy * dz;
-sol_diff = sol_state - sol_mean;
-sol_var = sum(sum((sol_mean - sol_diff).^2,2),3) / (Nx*N^2-1);
-sol_std = sqrt(sol_var);
+sol_mean = sum(sum(sol_ROM, 2), 3) * dy * dz;  
+sol_diff = sol_ROM - sol_mean;  
+sol_var = sum(sum(sol_diff.^2, 2), 3) / (N^2 - 1); 
+sol_std = sqrt(sol_var); 
 % 
 figure
 plot(x, sol_mean, LineWidth= 2, color = "r")
@@ -145,15 +145,3 @@ title(['Nmode = ' num2str(Nmode) ', HR nodes = ' num2str(NHR)])
 title('Mean and std of ROM solution')
 
 
-% tiledlayout(2,1)
-% nexttile
-% semilogy(NmodeList, l1_er_list, LineWidth = 2, LineStyle="--")
-% hold on
-% scatter(NmodeList,l1_er_list, 100, "filled")
-% title('L1 error vs number of modes')
-% 
-% nexttile
-% semilogy(HR_list, l1_er_list, LineWidth = 2, LineStyle="--")
-% hold on
-% scatter(HR_list,l1_er_list, 100, "filled")
-% title(['L1 error vs number of HR nodes at Nmode=' num2str(Nmode)])
